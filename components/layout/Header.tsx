@@ -26,7 +26,10 @@ const Header: React.FC = () => {
               <li className={styles.li ?? ''}><button className={styles.button ?? ''} onClick={handleLogout}>Logout</button></li>
             </>
           ) : (
-            <li className={styles.li ?? ''}><Link className={styles.a ?? ''} href="/auth/login">Login</Link></li>
+            <>
+              <li className={styles.li ?? ''}><Link className={styles.a ?? ''} href="/auth/login">Login</Link></li>
+              <li className={styles.li ?? ''}><Link className={styles.a ?? ''} href="/auth/register">Register</Link></li>
+            </>
           )}
         </ul>
       </nav>
