@@ -1,12 +1,12 @@
-// app/auth/login/page.tsx
-
 "use client";
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
-  const [username, setUsername] = useState('');
+  const [mail, setMail] = useState('');
   const [password, setPassword] = useState('');
+  const router = useRouter(); // Now using 'next/navigation'
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -15,10 +15,16 @@ export default function LoginPage() {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({ mail: mail, password: password }),
     });
     const data = await response.json();
     console.log(data);
+
+    if (data && data.jwttoken && data.appUser && data.appUser.username) {
+      sessionStorage.setItem('jwttoken', data.jwttoken);
+      sessionStorage.setItem('username', data.appUser.username);
+      router.push('/home'); // Redirect to home page
+    }
   };
 
   return (
@@ -27,9 +33,9 @@ export default function LoginPage() {
       <form onSubmit={handleSubmit}>
         <input
           type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder="Username"
+          value={mail}
+          onChange={(e) => setMail(e.target.value)}
+          placeholder="Username/eMail"
         />
         <input
           type="password"
