@@ -9,11 +9,13 @@ export default function RegisterPage() {
   const [password, setPassword] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [error, setError] = useState('');
   const router = useRouter();
   const { login } = useAuth();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    setError(''); // Clear any previous error
     const response = await fetch('http://localhost:8080/api/v0/auth/register', {
       method: 'POST',
       headers: {
@@ -24,9 +26,14 @@ export default function RegisterPage() {
     const data = await response.json();
     console.log(data);
 
-    if (data && data.jwttoken && data.appUser && data.appUser.username) {
-      login(data.jwttoken, data.appUser.username);
-      router.push('/home'); // Redirect to home page
+    if (response.ok) {
+      if (data && data.id && data.mail) {
+        // Registration successful, redirect to confirmation page
+        router.push('/auth/register/confirmation');
+      }
+    } else {
+      // Registration failed, show error message
+      setError(data.message || 'There was an error with the registration. Please try again.');
     }
   };
 
@@ -60,6 +67,7 @@ export default function RegisterPage() {
         />
         <button type="submit">Register</button>
       </form>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
     </div>
   );
 }
