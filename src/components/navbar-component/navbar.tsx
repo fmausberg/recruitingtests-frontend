@@ -19,7 +19,7 @@ const Navbar = () => {
           {/* Navigation: Auf Mobile versteckt, auf Desktop 6 von 12 Spalten */}
           <div className="hidden md:block md:col-span-6">
             <div className="grid grid-cols-4 gap-4 justify-items-center">
-              <a href="#" className="hover:text-navbar-hover text-navbar-text">Home</a>
+              <a href="/home" className="hover:text-navbar-hover text-navbar-text">Home</a>
               <a href="#" className="hover:text-navbar-hover text-navbar-text">About</a>
               <a href="#" className="hover:text-navbar-hover text-navbar-text">Services</a>
               <a href="#" className="hover:text-navbar-hover text-navbar-text">Contact</a>
@@ -47,9 +47,11 @@ const Navbar = () => {
                 </button>
               </Link>
               {/* Secondary Button */}
-              <button className="bg-primaryButton hover:bg-primaryButton-hover text-primaryButton-text font-bold py-2 px-4 rounded">
-                Register
-              </button>
+              <Link href="/home/auth/register">
+                <button className="bg-primaryButton hover:bg-primaryButton-hover text-primaryButton-text font-bold py-2 px-4 rounded">
+                  Register
+                </button>
+              </Link>
             </div>
           </div>
         </div>

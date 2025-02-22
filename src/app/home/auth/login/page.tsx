@@ -63,7 +63,7 @@ export default function LoginPage() {
                             <input type="checkbox" className="rounded border-slate-300 text-formsDesigns-checkbox shadow-sm focus:formsDesigns-focus focus:ring focus:ring-formsDesigns-focus focus:ring-opacity-50" />
                             <span className="ml-2 text-textPrimary">Angemeldet bleiben</span>
                         </label>
-                        <a href="#" className="text-links hover:text-links-hover">
+                        <a href="/home/auth/forgot-password" className="text-links hover:text-links-hover">
                             Passwort vergessen?
                         </a>
                     </div>
