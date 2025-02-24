@@ -2,12 +2,18 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First install the next package:
+Install the next package
+
 ```bash
 npm install
 ```
+Install the autoprefixer
 
-First, run the development server:
+```bash
+npm install autoprefixer --save-dev
+```
+
+Run the development server:
 
 ```bash
 npm run dev

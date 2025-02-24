@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { useAuth } from '../../app/api/auth/authContext';
+import { useAuth } from '../../appTest/api/auth/authContext';
 import { useRouter } from 'next/navigation';
 import styles from './Header.module.css';
 import Link from 'next/link';
@@ -16,24 +16,9 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className={styles.header ?? ''}>
-      <nav className={styles.nav ?? ''}>
-        <ul className={styles.ul ?? ''}>
-          <li className={styles.li ?? ''}><Link className={styles.a ?? ''} href="/">Home</Link></li>
-          {isLoggedIn ? (
-            <>
-              <li className={styles.li ?? ''}><Link className={styles.a ?? ''} href="/profile">Profile</Link></li>
-              <li className={styles.li ?? ''}><button className={styles.button ?? ''} onClick={handleLogout}>Logout</button></li>
-            </>
-          ) : (
-            <>
-              <li className={styles.li ?? ''}><Link className={styles.a ?? ''} href="/auth/login">Login</Link></li>
-              <li className={styles.li ?? ''}><Link className={styles.a ?? ''} href="/auth/register">Register</Link></li>
-            </>
-          )}
-        </ul>
-      </nav>
-    </header>
+    <button className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-colors">
+      Klick mich
+    </button>
   );
 };
 
