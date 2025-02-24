@@ -1,20 +1,45 @@
 'use client';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function RegisterPage() {
     const [formData, setFormData] = useState({
-        firstname: '',
-        lastname: '',
-        telephone: '',
-        email: '',
+        firstName: '',
+        lastName: '',
+        mail: '',
         password: ''
     });
+    const [error, setError] = useState('');
+    const router = useRouter();
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Hier kommt später Ihre Login-Logik
-        console.log('Form submitted:', formData);
-    };
+        setError(''); // Clear any previous error
+        const response = await fetch('http://localhost:8080/api/v0/auth/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            mail: formData.mail,
+            password: formData.password,
+            firstName: formData.firstName,
+            lastName: formData.lastName
+          }),
+        });
+        const data = await response.json();
+        console.log(data);
+    
+        if (response.ok) {
+          if (data && data.id && data.mail) {
+            // Registration successful, redirect to confirmation page
+            router.push('/home/auth/register/confirmation');
+          }
+        } else {
+          // Registration failed, show error message
+          setError(data.message || 'There was an error with the registration. Please try again.');
+        }
+      };
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-slate-50 pt-16 pb-16">
@@ -22,43 +47,44 @@ export default function RegisterPage() {
                 <h1 className="text-2xl font-bold text-center mb-8 text-textPrimary">Registrieren</h1>
                 
                 <form onSubmit={handleSubmit} className="space-y-6">
-                    {/* Firstname Feld */}
+                    {/* firstName Feld */}
                     <div>
                         <label 
-                            htmlFor="firstname" 
+                            htmlFor="firstName" 
                             className="block text-sm font-medium text-textPrimary mb-2"
                         >
                             Vorname
                         </label>
                         <input
-                            type="firstname"
-                            id="firstname"
-                            value={formData.firstname}
-                            onChange={(e) => setFormData({...formData, firstname: e.target.value})}
+                            type="firstName"
+                            id="firstName"
+                            value={formData.firstName}
+                            onChange={(e) => setFormData({...formData, firstName: e.target.value})}
                             className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-formsDesigns-focus border-slate-300"
                             placeholder="Vorname"
                             required
                         />
                     </div>
-                    {/* Lastname Feld */}
+                    {/* lastName Feld */}
                     <div>
                         <label 
-                            htmlFor="lastname" 
+                            htmlFor="lastName" 
                             className="block text-sm font-medium text-textPrimary mb-2"
                         >
                             Nachname
                         </label>
                         <input
-                            type="lastname"
-                            id="lastname"
-                            value={formData.lastname}
-                            onChange={(e) => setFormData({...formData, lastname: e.target.value})}
+                            type="lastName"
+                            id="laslastNamee"
+                            value={formData.lastName}
+                            onChange={(e) => setFormData({...formData, lastName: e.target.value})}
                             className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-formsDesigns-focus border-slate-300"
                             placeholder="Nachname"
                             required
                         />
                     </div>
                     {/* Telephone Feld */}
+                    {/* no telefon field necessary
                     <div>
                         <label 
                             htmlFor="telephone" 
@@ -75,22 +101,22 @@ export default function RegisterPage() {
                             placeholder="Telefon"
                             required
                         />
-                    </div>
-                    {/* Email Feld */}
+                    </div> */}
+                    {/* mail Feld */}
                     <div>
                         <label 
-                            htmlFor="email" 
+                            htmlFor="mail" 
                             className="block text-sm font-medium text-textPrimary mb-2"
                         >
-                            Email
+                            mail
                         </label>
                         <input
-                            type="email"
-                            id="email"
-                            value={formData.email}
-                            onChange={(e) => setFormData({...formData, email: e.target.value})}
+                            type="mail"
+                            id="mail"
+                            value={formData.mail}
+                            onChange={(e) => setFormData({...formData, mail: e.target.value})}
                             className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-formsDesigns-focus border-slate-300"
-                            placeholder="ihre@email.com"
+                            placeholder="ihre@mail.com"
                             required
                         />
                     </div>
