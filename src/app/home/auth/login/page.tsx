@@ -14,7 +14,8 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const response = await fetch('http://localhost:8080/api/v0/auth/directlogin', {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/directlogin`, {
+      
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
