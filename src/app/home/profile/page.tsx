@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '../../api/auth/authContext';
 
 export default function UserProfile() {
   interface User {
@@ -13,16 +14,21 @@ export default function UserProfile() {
 
   const [user, setUser] = useState<User | null>(null);
   const [error, setError] = useState('');
+  const { isLoggedIn } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
+    if (!isLoggedIn) {
+      return;
+    }
+
     const fetchUser = async () => {
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/appuser/me`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('jwttoken')}`, // Assuming the token is stored in localStorage
+            'Authorization': `Bearer ${localStorage.getItem('jwttoken')}`,
           },
         });
         const data = await response.json();
@@ -37,7 +43,11 @@ export default function UserProfile() {
     };
 
     fetchUser();
-  }, []);
+  }, [isLoggedIn]);
+
+  if (!isLoggedIn) {
+    return <div>You are not logged in</div>;
+  }
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -76,7 +86,6 @@ export default function UserProfile() {
               {user.lastName}
             </p>
           </div>
-          {/* Add more user profile fields as needed */}
         </div>
       </div>
     </div>
