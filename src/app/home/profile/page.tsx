@@ -14,14 +14,11 @@ export default function UserProfile() {
 
   const [user, setUser] = useState<User | null>(null);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
   const { isLoggedIn } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!isLoggedIn) {
-      return;
-    }
-
     const fetchUser = async () => {
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/appuser/me`, {
@@ -39,18 +36,44 @@ export default function UserProfile() {
         }
       } catch (err) {
         setError('An error occurred while fetching user data.');
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchUser();
+    if (isLoggedIn) {
+      fetchUser();
+    } else {
+      setLoading(false);
+    }
   }, [isLoggedIn]);
 
+  if (loading) {
+    return (
+        <div className="flex items-center justify-center bg-slate-50 pt-16 pb-16 min-h-screen">
+          <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+            <h1 className="text-2xl font-bold text-center mb-8 text-textPrimary">Loading...</h1>
+          </div>
+        </div>
+      );
+  }
+
   if (!isLoggedIn) {
-    return <div>You are not logged in</div>;
+    return (
+      <div className="flex items-center justify-center bg-slate-50 pt-16 pb-16 min-h-screen">
+        <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+          <h1 className="text-2xl font-bold text-center mb-8 text-textPrimary">You are not logged in!</h1>
+          <div className="space-y-6"/>
+          <div>
+            <p className="text-textPrimary text-center">Please log in to view your profile.</p>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div className="">Error: {error}</div>;
   }
 
   if (!user) {
