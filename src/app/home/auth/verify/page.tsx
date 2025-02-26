@@ -13,7 +13,7 @@ export default function VerifyPage() {
   useEffect(() => {
     const verifyToken = async () => {
       if (token) {
-        const response = await fetch('http://localhost:8080/api/v0/auth/verifyMail', {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/verifyMail`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

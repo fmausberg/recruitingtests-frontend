@@ -1,10 +1,11 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface AuthContextType {
   isLoggedIn: boolean;
-  login: (token: string, username: string) => void;
+  login: (jwttoken: string, username: string) => void;
   logout: () => void;
 }
 
@@ -14,14 +15,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   useEffect(() => {
-    const token = localStorage.getItem('jwttoken');
-    if (token) {
+    const jwttoken = localStorage.getItem('jwttoken');
+    if (jwttoken) {
       setIsLoggedIn(true);
     }
   }, []);
 
-  const login = (token: string, username: string) => {
-    localStorage.setItem('jwttoken', token);
+  const login = (jwttoken: string, username: string) => {
+    localStorage.setItem('jwttoken', jwttoken);
     localStorage.setItem('username', username);
     setIsLoggedIn(true);
   };
