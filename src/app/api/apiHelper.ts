@@ -1,49 +1,49 @@
 import { useRouter } from "next/navigation";
 import { useAuth } from "./auth/authContext";
 
-export const authenticatedFetch = async (url, options = {}) => {
-  const router = useRouter();
-  console.log("AF C1");
-
-  // Get JWT from localStorage
+export const authenticatedFetch = async (url: string, options: RequestInit = {}) => {
   const jwttoken = localStorage.getItem('jwttoken');
-  
-  if (!jwttoken) {
+  const username = localStorage.getItem('username');
+
+  if (!jwttoken || !username) {
     throw new Error('User is not authenticated');
   }
 
-  // Create headers, ensuring Authorization is set with Bearer token
+  const authObject = {
+    name: username,
+    jwttoken: jwttoken,
+  };
+
   const headers = {
     'Content-Type': 'application/json',
     ...options.headers,
     'Authorization': `Bearer ${jwttoken}`,
   };
 
-  // Prepare the body (if it exists) while ensuring it's properly handled
-  let body;
-  if (options.body) {
-    body = JSON.stringify(options.body);
-  }
+  const body = JSON.stringify({
+    ...JSON.parse(options.body as string || '{}'),
+    Authentication: authObject,
+  });
 
   try {
     const response = await fetch(url, {
       ...options,
       headers,
-      body,  // Pass the body (or undefined if none)
+      body: options.body ? body : undefined,
     });
 
-    const data = await response.json();
+    // Check if the response contains the JWT expiration error
+    const data = await response.clone().json();
 
-    // Check for JWT expiration error
     if (data.error && data.error === "JWT token has expired. Please login again.") {
       const { logout } = useAuth();
       logout();
+      const router = useRouter();
       router.push("/login");
-      return { error: "JWT token expired" };
+      throw new Error("JWT token expired");
     }
 
-    // Return the response data for successful requests
-    return data;
+    return response; // Return the Response object
   } catch (error) {
     console.error('Error in API call:', error);
     throw new Error('API call failed');

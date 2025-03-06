@@ -22,26 +22,25 @@ export default function UserProfile() {
   const { isLoggedIn } = useAuth();
   const router = useRouter();
   console.log("C2");
+
   useEffect(() => {
     console.log("isLoggedIn:", isLoggedIn);  // Check the value of isLoggedIn
     const fetchUser = async () => {
       try {
         console.log("Calling authenticatedFetch...");
-        const headers = {
-          'Content-Type': 'application/json',
-          ...options.headers,
-          'Authorization': `Bearer ${jwttoken}`,
-        };
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/appuser/me`, {
+        const response = await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL}/appuser/me`, {
           method: 'GET',
         });
         console.log("Response from API:", response);  // Add this log
         if (response.ok) {
-          setUser(response);
+          const data = await response.json();
+          setUser(data);
         } else {
-          setError(response.message || 'Failed to fetch user data.');
+          const data = await response.json();
+          setError(data.message || 'Failed to fetch user data.');
         }
       } catch (err) {
+        console.log(err)
         setError('An error occurred while fetching user data.');
       } finally {
         setLoading(false);
@@ -58,11 +57,15 @@ export default function UserProfile() {
   const sendVerificationMail = async () => {
     if (!user) return;
 
+    console.log("Sending verification mail...");
+
     try {
       const response = await authenticatedFetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/sendVerificationMail`, {
         method: 'POST',
         body: JSON.stringify({ username: user.username }),
       });
+
+      console.log("Response:", response);
 
       if (response.ok) {
         alert('Verification mail sent successfully.');
@@ -71,6 +74,7 @@ export default function UserProfile() {
         alert(data.message || 'Failed to send verification mail.');
       }
     } catch (err) {
+      console.error("Error:", err);
       alert('An error occurred while sending verification mail.');
     }
   };
